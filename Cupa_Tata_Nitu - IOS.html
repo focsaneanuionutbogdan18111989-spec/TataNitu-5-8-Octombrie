@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cupa Tata Nitu — Concurs de Crap</title>
+<style>
+  :root {
+    --panel: #142a20; --panel2: #1b3a2b; --accent: #4caf7d; --accent2: #7fd8a8;
+    --gold: #e6c34a; --text: #e8f2ec; --muted: #a9c2b4; --border: #295140;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    background: linear-gradient(160deg, #0b1712, #0f1f17 40%, #10261c);
+    color: var(--text); line-height: 1.55;
+  }
+  header {
+    text-align: center; padding: 34px 18px 26px;
+    background: radial-gradient(circle at top, rgba(76,175,125,.25), transparent 70%);
+    border-bottom: 2px solid var(--border);
+  }
+  header h1 { margin: 0; font-size: 2.3rem; letter-spacing: 2px; color: var(--accent2); text-shadow: 0 2px 10px rgba(0,0,0,.5); }
+  header .dates { font-size: 1.2rem; color: var(--gold); margin-top: 8px; font-weight: 600; }
+  header .sub { color: var(--muted); margin-top: 6px; font-size: .95rem; }
+
+  .team-banner { max-width: 1100px; margin: 24px auto 0; padding: 0 14px; }
+  .team-banner .inner {
+    background: radial-gradient(circle at 20% 20%, rgba(230,195,74,.10), transparent 55%),
+      linear-gradient(135deg, #0a1b13, #14352a 45%, #0c241a);
+    border: 1px solid rgba(230,195,74,.5); border-radius: 18px;
+    padding: 26px 28px; display: flex; align-items: center; gap: 26px;
+    box-shadow: 0 10px 36px rgba(0,0,0,.5);
+  }
+  .team-crest {
+    flex: 0 0 auto; width: 240px; max-width: 55vw; height: auto;
+    border-radius: 12px; display: block;
+    box-shadow: 0 4px 14px rgba(0,0,0,.45);
+  }
+  .team-label { color: var(--gold); text-transform: uppercase; letter-spacing: 5px; font-size: .72rem; font-weight: 700; }
+  .team-name {
+    font-size: 2.1rem; font-weight: 900; letter-spacing: 1px;
+    background: linear-gradient(90deg, #f3dd8a, #e6c34a 55%, #c9a02f);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: var(--gold);
+    margin: 4px 0 2px; line-height: 1.05;
+  }
+  .team-loc { color: var(--accent2); font-weight: 600; letter-spacing: 1px; margin-bottom: 14px; font-size: .92rem; }
+  .team-members { display: flex; flex-wrap: wrap; gap: 8px; }
+  .team-members .member {
+    background: rgba(255,255,255,.05); border: 1px solid rgba(230,195,74,.35);
+    border-radius: 30px; padding: 6px 14px; font-weight: 600; color: var(--text);
+    display: inline-flex; align-items: center; gap: 8px; font-size: .85rem;
+  }
+  .team-members .member .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); }
+
+  .quick { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; max-width: 1100px; margin: 22px auto 0; padding: 0 14px; }
+  .quick .card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 12px 18px; min-width: 150px; text-align: center; flex: 1 1 150px; }
+  .quick .card .label { font-size: .75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+  .quick .card .value { font-size: 1.1rem; font-weight: 700; color: var(--accent2); margin-top: 4px; }
+
+  /* CSS-only tabs (work without JS on iOS WhatsApp/Mail preview) */
+  .tabradio { position: absolute; opacity: 0; pointer-events: none; }
+  nav.tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; max-width: 1100px; margin: 26px auto 0; padding: 0 14px; }
+  nav.tabs label.tablabel {
+    background: var(--panel); color: var(--text); border: 1px solid var(--border);
+    padding: 10px 16px; border-radius: 8px 8px 0 0; cursor: pointer;
+    font-size: .9rem; font-weight: 600; user-select: none; display: inline-block;
+  }
+  main { max-width: 1100px; margin: 0 auto 60px; padding: 0 14px; }
+  section.tab-content {
+    display: none; background: var(--panel); border: 1px solid var(--border);
+    border-radius: 12px; padding: 24px; margin-top: 6px;
+  }
+  #tab-echipa:checked ~ main #sec-echipa { display:block; }
+#tab-info:checked ~ main #sec-info { display:block; }
+#tab-premii:checked ~ main #sec-premii { display:block; }
+#tab-regulament:checked ~ main #sec-regulament { display:block; }
+#tab-costuri:checked ~ main #sec-costuri { display:block; }
+#tab-nadire:checked ~ main #sec-nadire { display:block; }
+#tab-mixbag:checked ~ main #sec-mixbag { display:block; }
+#tab-mese:checked ~ main #sec-mese { display:block; }
+#tab-harta:checked ~ main #sec-harta { display:block; }
+#tab-prognoza:checked ~ main #sec-prognoza { display:block; }
+#tab-lectii:checked ~ main #sec-lectii { display:block; }
+#tab-strategie:checked ~ main #sec-strategie { display:block; }
+  #tab-echipa:checked ~ nav.tabs label[for="tab-echipa"] { background:var(--accent); color:#0b1712; border-color:var(--accent); }
+#tab-info:checked ~ nav.tabs label[for="tab-info"] { background:var(--accent); color:#0b1712; border-color:var(--accent); }
+#tab-premii:checked ~ nav.tabs label[for="tab-premii"] { background:var(--accent); color:#0b1712; border-color:var(--accent); }
+#tab-regulament:checked ~ nav.tabs label[for="tab-regulament"] { background:var(--accent); color:#0b1712; border-color:var(--accent); }
+#tab-costuri:checked ~ nav.tabs label[for="tab-costuri"] { background:var(--accent); color:#0b1712; border-color:var(--accent); }
+#tab-nadire:checked ~ nav.tabs label[for="tab-nadire"] { background:var(--accent); color:#0b1712; border-color:var(--accent); }
+#tab-mixbag:checked ~ nav.tabs label[for="tab-mixbag"] { background:var(--accent); color:#0b1712; border-color:var(--accent); }
+#tab-mese:checked ~ nav.tabs label[for="tab-mese"] { background:var(--accent); color:#0b1712; border-color:var(--accent); }
+#tab-harta:checked ~ nav.tabs label[for="tab-harta"] { background:var(--accent); color:#0b1712; border-color:var(--accent); }
+#tab-prognoza:checked ~ nav.tabs label[for="tab-prognoza"] { background:var(--accent); color:#0b1712; border-color:var(--accent); }
+#tab-lectii:checked ~ nav.tabs label[for="tab-lectii"] { background:var(--accent); color:#0b1712; border-color:var(--accent); }
+#tab-strategie:checked ~ nav.tabs label[for="tab-strategie"] { background:var(--accent); color:#0b1712; border-color:var(--accent); }
+
+  /* Elemente noi: hartă, prognoză, strategie */
+  .map-wrap { background:#0d1d16; border:1px solid var(--border); border-radius:12px; padding:8px; margin-top:12px; }
+  .map-wrap svg { width:100%; height:auto; display:block; }
+  .legend { display:flex; flex-wrap:wrap; gap:8px 18px; font-size:.85rem; color:var(--muted); margin-top:12px; }
+  .legend i { display:inline-block; width:14px; height:14px; border-radius:50%; vertical-align:middle; margin-right:6px; }
+  .callout { background:rgba(230,195,74,.08); border-left:4px solid var(--gold); padding:12px 16px; border-radius:8px; margin:14px 0; }
+  .callout.green { background:rgba(76,175,125,.10); border-left-color:var(--accent); }
+  .callout.red { background:rgba(255,157,118,.08); border-left-color:#ff9d76; }
+  .stand-box { display:flex; align-items:center; justify-content:center; gap:12px; flex-wrap:wrap; background:linear-gradient(135deg,#1b3a2b,#142a20); border:2px dashed var(--gold); border-radius:12px; padding:14px; margin:10px 0 4px; font-size:1.1rem; font-weight:700; color:var(--gold); }
+  .stand-box .blank { display:inline-block; min-width:90px; border-bottom:2px solid var(--gold); height:1.4em; }
+  .days { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; margin-top:12px; }
+  .day { background:linear-gradient(160deg,var(--panel2),var(--panel)); border:1px solid var(--border); border-radius:10px; padding:14px; }
+  .day .d { color:var(--gold); font-weight:800; font-size:1rem; }
+  .day .t { font-size:1.5rem; font-weight:800; color:var(--accent2); margin:4px 0; }
+  .day .s { color:var(--muted); font-size:.85rem; }
+  .day.best { border-color:var(--gold); box-shadow:0 0 0 1px var(--gold) inset; }
+  .chk { list-style:none; padding-left:0; }
+  .chk li { padding:8px 10px 8px 36px; position:relative; border-bottom:1px solid var(--border); }
+  .chk li::before { content:"✅"; position:absolute; left:6px; top:8px; }
+  td.cold { background:rgba(80,150,255,.12) !important; }
+  td.warm { background:rgba(230,195,74,.14) !important; }
+  .muted { color:var(--muted); font-size:.85rem; }
+
+  h2 { color: var(--accent2); border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-top: 0; font-size: 1.4rem; }
+  h3 { color: var(--gold); margin-top: 26px; font-size: 1.1rem; }
+  ul { padding-left: 20px; } li { margin-bottom: 6px; }
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: .9rem; }
+  th, td { border: 1px solid var(--border); padding: 8px 10px; text-align: left; }
+  th { background: var(--panel2); color: var(--accent2); }
+  tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+  td.num, th.num { text-align: right; }
+  .prizes { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap: 12px; margin-top: 14px; }
+  .prize { background: linear-gradient(160deg, var(--panel2), var(--panel)); border: 1px solid var(--border); border-radius: 10px; padding: 14px; text-align: center; }
+  .prize .place { font-weight: 700; color: var(--gold); font-size: 1rem; }
+  .prize .amount { font-size: 1.4rem; font-weight: 800; color: var(--accent2); margin-top: 6px; }
+  .rule-block { margin-bottom: 20px; }
+  .rule-block .letter { color: var(--accent2); font-weight: 700; }
+  .badge { display:inline-block; background: var(--accent); color:#0b1712; border-radius: 20px; padding: 2px 12px; font-weight:700; font-size:.8rem; }
+  .warn { color: #ff9d76; font-weight: 600; }
+  .status-ok { color: var(--accent2); font-weight: 700; }
+  .status-no { color: #ff9d76; font-weight: 700; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  footer { text-align:center; color: var(--muted); padding: 26px 14px 44px; font-size:.82rem; }
+
+  @media (max-width: 760px) {
+    header h1 { font-size: 1.7rem; }
+    .team-banner .inner { flex-direction: column; text-align: center; padding: 22px 18px; }
+    .team-crest { width: 260px; max-width: 80vw; }
+    .team-members { justify-content: center; }
+    .team-name { font-size: 1.6rem; }
+    .grid2 { grid-template-columns: 1fr; }
+    nav.tabs label.tablabel { flex: 1 1 auto; text-align: center; border-radius: 8px; }
+    section.tab-content { border-radius: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🎣 CUPA TATA NITU</h1>
+  <div class="dates">5 – 8 Octombrie 2026</div>
+  <div class="sub">Balta DORIPESCO Brașov – Balta nr. 4 &nbsp;•&nbsp; 72 de ore &nbsp;•&nbsp; Organizator: Tata Nitu</div>
+</header>
+
+<div class="team-banner">
+  <div class="inner">
+    <img class="team-crest" src="data:image/jpeg;base64,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" alt="Broken Sling Team Iași logo">
+    <div class="team-text">
+      <div class="team-label">Echipa noastră</div>
+      <div class="team-name">BROKEN SLING TEAM IAȘI</div>
+      <div class="team-loc">🏆 Iași · România · Cupa Tata Nitu 2026</div>
+      <div class="team-members">
+        <span class="member"><span class="dot"></span>Buzatu Marian</span>
+        <span class="member"><span class="dot"></span>Focsaneanu Ionuț</span>
+        <span class="member"><span class="dot"></span>Prodan Constantin</span>
+        <span class="member"><span class="dot"></span>Vlad Bolohan</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="quick">
+  <div class="card"><div class="label">Echipă</div><div class="value">4 pescari</div></div>
+  <div class="card"><div class="label">Locuri</div><div class="value">24 (6×4)</div></div>
+  <div class="card"><div class="label">Taxă</div><div class="value">3.250 RON</div></div>
+  <div class="card"><div class="label">Clasament</div><div class="value">Cant. + Cal.</div></div>
+  <div class="card"><div class="label">Cupe</div><div class="value">13 · 52 cupe</div></div>
+  <div class="card"><div class="label">Standul nostru</div><div class="value">TBD · extragere luni</div></div>
+</div>
+
+<input class="tabradio" type="radio" name="tabs" id="tab-echipa" checked>
+<input class="tabradio" type="radio" name="tabs" id="tab-info">
+<input class="tabradio" type="radio" name="tabs" id="tab-premii">
+<input class="tabradio" type="radio" name="tabs" id="tab-regulament">
+<input class="tabradio" type="radio" name="tabs" id="tab-costuri">
+<input class="tabradio" type="radio" name="tabs" id="tab-nadire">
+<input class="tabradio" type="radio" name="tabs" id="tab-mixbag">
+<input class="tabradio" type="radio" name="tabs" id="tab-mese">
+<input class="tabradio" type="radio" name="tabs" id="tab-harta">
+<input class="tabradio" type="radio" name="tabs" id="tab-prognoza">
+<input class="tabradio" type="radio" name="tabs" id="tab-lectii">
+<input class="tabradio" type="radio" name="tabs" id="tab-strategie">
+
+<nav class="tabs">
+<label class="tablabel" for="tab-echipa">🐟 Echipa</label>
+<label class="tablabel" for="tab-info">📋 Info Concurs</label>
+<label class="tablabel" for="tab-strategie">🧭 Strategie 5–8 oct</label>
+<label class="tablabel" for="tab-harta">🗺️ Hartă Baltă</label>
+<label class="tablabel" for="tab-prognoza">🌦️ Prognoză</label>
+<label class="tablabel" for="tab-lectii">📊 Lecții concurs anterior</label>
+<label class="tablabel" for="tab-premii">🏆 Premii</label>
+<label class="tablabel" for="tab-regulament">📜 Regulament</label>
+<label class="tablabel" for="tab-costuri">💰 Costuri</label>
+<label class="tablabel" for="tab-nadire">🎯 Program Nădire</label>
+<label class="tablabel" for="tab-mixbag">🧪 Mix Bag</label>
+<label class="tablabel" for="tab-mese">🍽️ Mese & De Adus</label>
+</nav>
+
+<main>
+<section id="sec-echipa" class="tab-content">
+  <h2>🐟 Broken Sling Team Iași</h2>
+  <p><strong>Locație:</strong> Iași, România</p>
+  <h3>Componența echipei (4 pescari)</h3>
+  <div class="prizes">
+    <div class="prize"><div class="place">Pescar 1</div><div class="amount" style="font-size:1.2rem">Buzatu Marian</div></div>
+    <div class="prize"><div class="place">Pescar 2</div><div class="amount" style="font-size:1.2rem">Focsaneanu Ionuț</div></div>
+    <div class="prize"><div class="place">Pescar 3</div><div class="amount" style="font-size:1.2rem">Prodan Constantin</div></div>
+    <div class="prize"><div class="place">Pescar 4</div><div class="amount" style="font-size:1.2rem">Vlad Bolohan</div></div>
+  </div>
+  <p style="margin-top:24px;color:var(--muted)">Echipa participă la <strong>Cupa Tata Nitu</strong> (5–8 octombrie 2026) pe Balta Doripesco Brașov, balta nr. 4. Mult succes! 🎣</p>
+</section>
+<section id="sec-info" class="tab-content">
+  <h2>Detalii Generale</h2>
+  <ul>
+    <li><strong>Concurs:</strong> Cupa Tata Nitu</li>
+    <li><strong>Perioadă:</strong> 5 – 8 octombrie 2026 (72 de ore)</li>
+    <li><strong>Organizator:</strong> Tata Nitu</li>
+    <li><strong>Locație:</strong> Balta DORIPESCO Brașov, balta nr. 4</li>
+    <li><strong>Echipe:</strong> formate din 4 pescari</li>
+    <li><strong>Locuri disponibile:</strong> 24, împărțite în 6 sectoare de câte 4 echipe</li>
+    <li><strong>Taxă:</strong> 3.250 RON / echipă</li>
+    <li><strong>Locuri de pescuit:</strong> nu se aleg — se trag la sorți</li>
+  </ul>
+  <h3>Sistemul de Clasament</h3>
+  <ul>
+    <li>Se fac <strong>două clasamente</strong>: cantitate și calitate (cei mai mari 10 pești).</li>
+    <li>Se adună punctele din ambele clasamente. <strong>Câștigă echipa cu cele mai puține puncte.</strong></li>
+    <li>La egalitate de puncte, următorul criteriu de departajare este <strong>cantitatea</strong>.</li>
+    <li>Câștigătorii sectoarelor intră în clasamentul general pentru stabilirea locurilor I–VI general (în funcție de punctele din sector).</li>
+  </ul>
+  <h3>La începutul concursului — 2 extrageri</h3>
+  <ul>
+    <li>Prima extragere: ordinea de extragere.</li>
+    <li>A doua extragere: stabilirea standului.</li>
+    <li><span class="warn">Standurile NU se aleg, ci se trag la sorți.</span></li>
+    <li>După tragerea la sorți: <strong>120 de minute</strong> pentru pregătirea echipamentului (interzisă sondarea, nădirea sau fixarea balizelor).</li>
+  </ul>
+</section>
+<section id="sec-premii" class="tab-content">
+  <h2>🏆 Premii</h2>
+  <p><span class="badge">13 echipe premiate</span> &nbsp; <span class="badge">52 de cupe</span> &nbsp; Toți concurenții primesc medalii.</p>
+  <h3>6 Premii la General</h3>
+  <div class="prizes">
+    <div class="prize"><div class="place">Locul I</div><div class="amount">20.000 RON</div></div>
+    <div class="prize"><div class="place">Locul II</div><div class="amount">10.000 RON</div></div>
+    <div class="prize"><div class="place">Locul III</div><div class="amount">5.000 RON</div></div>
+    <div class="prize"><div class="place">Locul IV</div><div class="amount">4.000 RON</div></div>
+    <div class="prize"><div class="place">Locul V</div><div class="amount">3.500 RON</div></div>
+    <div class="prize"><div class="place">Locul VI</div><div class="amount">3.500 RON</div></div>
+  </div>
+  <h3>Alte Premii</h3>
+  <ul>
+    <li><strong>Captura (la general):</strong> produse de pescuit</li>
+    <li><strong>6 premii pe sectoare</strong> — Locul I sector: produse de pescuit</li>
+    <li>Cele 13 echipe premiate primesc câte 4 cupe.</li>
+  </ul>
+  <h3 class="warn">Reguli importante privind premiile</h3>
+  <ul>
+    <li><span class="warn">Premiile NU se cumulează.</span> O echipă primește un singur premiu — cel mai important, în ordinea:
+      <ol>
+        <li>Clasament general locurile 1–6</li>
+        <li>Captura</li>
+        <li>Locul 1 sector</li>
+      </ol>
+    </li>
+    <li>Premiile sunt valabile dacă participă <strong>24 de echipe</strong>.</li>
+  </ul>
+</section>
+<section id="sec-regulament" class="tab-content">
+  <h2>📜 Regulament</h2>
+  <h3>I. Condiții de Pescuit</h3>
+  <div class="rule-block"><span class="letter">A.</span> OBLIGATORIU firul de păr atașat cârligului. INTERZIS hrana vie pe firul de păr. Permis: boiles, popup, burete, pelet, porumb, porumb expandat, puffi, plastice.</div>
+  <div class="rule-block"><span class="letter">B.</span> Permis momitorul. Se poate pescui cu plumb de orice formă (chiar cu striații), minim 50 g.</div>
+  <div class="rule-block"><span class="letter">C.</span> Se poate pune pastă sau nadă pe plumb sau momitor.</div>
+  <div class="rule-block"><span class="letter">D.</span> Pescuit cu un singur cârlig pe montură. OBLIGATORIU fir atașat cârligului și monturi care permit eliberarea crapilor în caz de rupere (culisantă sau cu plumb pierdut).</div>
+  <div class="rule-block"><span class="letter">E.</span> Se pescuiește doar în fața standului (se poate baliza cu markere luminoase). Grosime minimă câmp: 0,25 mm.</div>
+  <div class="rule-block"><span class="letter">F.</span> Nu este obligatoriu rod pod-ul.</div>
+  <div class="rule-block"><span class="letter">G.</span> Runnerul (al 4-lea concurent) are drepturi depline. O singură schimbare pe durata concursului, anunțată arbitrului și consemnată în fișe.</div>
+  <div class="rule-block"><span class="letter">H.</span> OBLIGATORIU: saci de crap (minim 15), saltea de primire și spray pentru tratarea crapilor. Manevrare cu grijă pe mal.</div>
+  <div class="rule-block"><span class="letter">I.</span> Se poate intra în apă la scoaterea peștelui sau pentru a-i lega la apă mai adâncă (caniculă). Fără scandal/deranj. Vizite până la ora 19 (doar pe jos).</div>
+  <h3>II. Nădirea</h3>
+  <div class="rule-block"><span class="letter">A.</span> <span class="warn">STRICT INTERZISĂ</span> nada de origine animală (vie). Permise: mixuri, semințe, boilesuri, pelete.</div>
+  <div class="rule-block"><span class="letter">B.</span> Doar nădire manuală: cobra, cupă, catapultă, praștie, rachetă, accesorii PVA. Racheta max Ø 50 mm / lungime 200 mm (excepție SPOMB). INTERZIS sonarul și barca de nădit.</div>
+  <div class="rule-block"><span class="letter">C.</span> INTERZIS: pământ, argilă, pietriș, bentonită.</div>
+  <div class="rule-block"><span class="letter">D.</span> <span class="warn">INTERZISĂ nădirea grea (rachetă, SPOMB, catapultă, cupă) între 20:00 – 08:00</span> — permise doar cobra și praștia de mână. 2 avertismente = depunctare 20 kg.</div>
+  <div class="rule-block"><span class="letter">E.</span> Porumbul pentru nădit trebuie OBLIGATORIU fiert.</div>
+  <h3>III. Cântărirea</h3>
+  <div class="rule-block"><span class="letter">A.</span> Se punctează crapul comun, oglindă și amurul.</div>
+  <div class="rule-block"><span class="letter">B.</span> La fiecare cântărire semnează obligatoriu un vecin de stand și arbitrii.</div>
+  <div class="rule-block"><span class="letter">C.</span> Cântărire de 2 ori pe zi. Prima jumătate de concurs se cântărește de la un capăt de sector, a doua jumătate de la celălalt capăt.</div>
+  <div class="rule-block"><span class="letter">D.</span> Într-un sac: 2–3 crapi până la 5 kg, 2 crapi de 5–7 kg sau un singur crap peste 8 kg. INTERZIS butoaie/lighene/saltele cu apă/recipiente mari.</div>
+  <div class="rule-block"><span class="letter">E.</span> Cântar suplimentar dacă un exemplar are peste 17 kg. Pește rănit/letargic: se cântărește, dar se scade 1 kg. Fără cântăriri suplimentare în timpul cântarului oficial.</div>
+  <div class="rule-block"><span class="letter">F.</span> Cântar suplimentar când echipa a umplut 15 saci.</div>
+  <div class="rule-block"><span class="letter">G.</span> Crap mort la cântărire = avertisment și nu se ia în considerare; repetare = depunctare 20 kg / crap.</div>
+  <div class="rule-block"><span class="letter">H.</span> Crapii se pot păstra în afara standului cu acordul arbitrului. OBLIGATORIU cântărirea tuturor crapilor. Sacii se ancorează la vedere.</div>
+  <div class="rule-block"><span class="letter">I.</span> Arbitrii aplică regulamentul și notează avertismentele pe foaia de arbitraj.</div>
+  <div class="rule-block"><span class="letter">J.</span> Probleme netratate: decizie cu organizatorii și arbitrii în maxim o oră.</div>
+  <h3>IV. Departajare</h3>
+  <div class="rule-block"><span class="letter">A.</span> Două clasamente: cantitate și calitate (cei mai mari 10 pești). Câștigă echipa cu cele mai puține puncte.
+    <ul>
+      <li><strong>Cantitate (egalitate):</strong> câștigă echipa cu mai mulți crapi prinși.</li>
+      <li><strong>Captură (egalitate):</strong> al doilea crap ca greutate, apoi al treilea etc.</li>
+      <li><strong>Calitate (egalitate):</strong> cine a prins cel mai mare pește.</li>
+      <li>La calitate se iau doar cei mai mari 10 pești cântăriți separat. Cine are mai mulți pești separați e în față (9 pești &gt; 8 pești indiferent de greutate).</li>
+      <li><strong>General / sector (egalitate de puncte):</strong> cantitatea.</li>
+    </ul>
+  </div>
+  <div class="rule-block"><span class="letter">B.</span> Premiile NU se cumulează. Ordine: locul I–III general, Locul 1 sector, captura, locurile II–III pe sector.</div>
+  <h3>V. Dispoziții Finale</h3>
+  <div class="rule-block"><span class="letter">A.</span> 120 min pregătire după tragerea la sorți (fără sondare/nădire/balize). La final, dacă se înțeapă un crap înainte de semnal: 15 minute pentru scoatere.</div>
+  <div class="rule-block"><span class="letter">B.</span> Echipament complet în interiorul standului. Lansete la max 5 m de ponton. Fără iluminare excesivă noaptea. Foc doar supravegheat; INTERZIS focul deschis noaptea.</div>
+  <div class="rule-block"><span class="letter">C.</span> INTERZIS scăldatul în lac.</div>
+  <div class="rule-block"><span class="letter">D.</span> Asistență medicală prin grija fiecărei echipe; la arbitrii doar materiale de prim ajutor.</div>
+  <div class="rule-block"><span class="letter">E.</span> Forță majoră: după 48h se poate declara câștigător cel cu cel mai mult pește/captura; sub 48h se reprogramează cu păstrarea locurilor (repornire de la minutul 1).</div>
+  <div class="rule-block"><span class="letter">F.</span> Standul se lasă curat. Nerespectare = depunctare 20 kg.</div>
+  <div class="rule-block"><span class="letter">G.</span> INTERZIS reținerea/omorârea altui pește decât crapul.</div>
+  <div class="rule-block"><span class="letter">H.</span> Retragerea din concurs — conform arbitrului și organizatorilor.</div>
+  <div class="rule-block"><span class="letter">I.</span> Contestații în scris cu garanție.</div>
+  <div class="rule-block"><span class="letter">J.</span> O singură schimbare justificată în echipă, consemnată pe fișă.</div>
+  <div class="rule-block"><span class="letter">K.</span> <span class="warn">Sancțiuni:</span> încălcarea I.A, II.A, II.B = eliminare directă. Încălcarea I.B, I.D, I.E, I.I, II.C, II.D, V.B, V.F = avertisment / 20 kg depunctare / eliminare (progresiv).</div>
+</section>
+<section id="sec-costuri" class="tab-content">
+  <h2>💰 Costuri Echipă</h2>
+  <h3>Achiziții</h3>
+  <div style="overflow-x:auto;">
+  <table>
+    <thead><tr><th>Achiziție</th><th class="num">Cost total (RON)</th></tr></thead>
+    <tbody>
+      <tr><td>Taxă concurs</td><td class="num">3.250</td></tr>
+      <tr><td>Alună tigrată (Narcis)</td><td class="num">620</td></tr>
+      <tr><td>Consumabile Total Fishing</td><td class="num">467</td></tr>
+      <tr><td>Mix Pelete + Nădire (Cămara Crapului) / Mix spomb / Spărtură aurie, Germeni, Lapte, Mix bag</td><td class="num">561</td></tr>
+      <tr><td>Boilies Decathlon</td><td class="num">300</td></tr>
+      <tr><td>Pelete Lucian Egros &amp; Tomești + spoduri</td><td class="num">211</td></tr>
+      <tr><td>Cazare Doripesco</td><td class="num">200</td></tr>
+      <tr style="font-weight:700"><td>TOTAL</td><td class="num">5.609</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <h3>Situație plăți / pescar</h3>
+  <div style="overflow-x:auto;">
+  <table>
+    <thead><tr><th>Pescar</th><th class="num">Total / pescar (RON)</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>Prodan</td><td class="num">589,75</td><td class="status-ok">Achitat</td></tr>
+      <tr><td>Focsaneanu</td><td class="num">702,25</td><td class="status-no">De achitat</td></tr>
+      <tr><td>Bolohan</td><td class="num">1.402,25</td><td class="status-no">De achitat</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <h3>Detaliu taxă concurs (3.250 RON)</h3>
+  <div style="overflow-x:auto;">
+  <table>
+    <thead><tr><th>Nume</th><th class="num">Achitat (RON)</th><th class="num">Rămas de achitat (RON)</th></tr></thead>
+    <tbody>
+      <tr><td>Prodan</td><td class="num">812,50</td><td class="num">0</td></tr>
+      <tr><td>Focsaneanu</td><td class="num">700</td><td class="num">112,50</td></tr>
+      <tr><td>Bolohan</td><td class="num">0</td><td class="num">812,50</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+<section id="sec-nadire" class="tab-content">
+  <h2>🎯 Program Nădire (Spomb &amp; Cobra)</h2>
+
+  <h3>Preparate — cantitate per nădire <span class="badge">ACTUALIZAT</span></h3>
+  <div style="overflow-x:auto;">
+  <table>
+    <thead><tr><th>Preparat</th><th class="num">Preparat / kg</th><th class="num">Cantitate kg / nădire</th></tr></thead>
+    <tbody>
+      <tr><td>Aluna întreagă</td><td class="num">20</td><td class="num">4</td></tr>
+      <tr><td>Spărtură Alună</td><td class="num">10</td><td class="num">2</td></tr>
+      <tr><td>Mix spomb Cămara Crapului</td><td class="num">7</td><td class="num">1,4</td></tr>
+      <tr><td>Lapte de Porumb</td><td class="num">2,5</td><td class="num">0,5</td></tr>
+      <tr><td>Porumb &amp; cânepă</td><td class="num">5</td><td class="num">1</td></tr>
+      <tr><td>Spărtură aurie</td><td class="num">6</td><td class="num">1,2</td></tr>
+      <tr style="font-weight:700"><td>Total kg nadă spomb (nefiartă)</td><td class="num">50,5</td><td class="num">—</td></tr>
+      <tr><td>Boilies</td><td class="num">20</td><td class="num">6,7</td></tr>
+      <tr style="font-weight:700"><td>Total nadă inclusiv boilies</td><td class="num">70,5</td><td class="num">—</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Program de nădire (orar) <span class="badge">ACTUALIZAT</span></h3>
+  <div style="overflow-x:auto;">
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        <th colspan="2">Luni</th>
+        <th colspan="3">Marți</th>
+        <th colspan="3">Miercuri</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th>Ora</th>
+        <td>14:00</td><td>Noaptea</td>
+        <td>9:00</td><td>17:00</td><td>Noaptea</td>
+        <td>9:00</td><td>17:00</td><td>Noaptea</td>
+      </tr>
+      <tr>
+        <th>Cantitate</th>
+        <td>10 kg</td><td>—</td>
+        <td>10 kg</td><td>10 kg</td><td>—</td>
+        <td>10 kg</td><td>10 kg</td><td>—</td>
+      </tr>
+      <tr>
+        <th>Boilies (noaptea)</th>
+        <td>—</td><td>6,7</td>
+        <td>—</td><td>—</td><td>6,7</td>
+        <td>—</td><td>—</td><td>6,7</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p class="warn">Reminder: nădirea grea permisă doar între 08:00 – 20:00. Noaptea doar cobra și praștie de mână (boilies).</p>
+
+  <h3>🧭 Variantă recomandată (în funcție de prognoză și de lecțiile din concursul anterior)</h3>
+  <div class="callout">Programul de mai sus rămâne <strong>planul echipei</strong>. Varianta de mai jos este o alternativă flexibilă. Principiul ei: <strong>începem cu puțin și creștem doar când peștii trag</strong>. Nopțile sunt reci (5–8°C), presiunea e mare luni–marți, iar Doripesco are tipar de start lent și final puternic.</div>
+  <div style="overflow-x:auto;">
+  <table>
+    <thead><tr><th>Moment</th><th>Cantitate recomandată</th><th>Condiție / motiv</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Luni ~14:00</strong></td><td>5–7 kg mix spomb (particule, spărtură, puține alune întregi)</td><td>Doar după sondare. Dacă vin trageri în primele ore, mai punem +3 kg la 17:00–18:00.</td></tr>
+      <tr><td>Luni noaptea</td><td>3–4 kg boilies (cobra)</td><td>Doar pe spoturile nădite ziua. Apa se răcește, peștele mănâncă puțin.</td></tr>
+      <tr><td><strong>Marți 09:00</strong></td><td>5 kg (noapte slabă) / 8 kg (≥3 trageri)</td><td>Decidem după bilanțul nopții.</td></tr>
+      <tr><td><strong>Marți 17:00</strong></td><td>8–10 kg</td><td>Ultima nădire grea înainte de apus (18:50). E aceeași oră ca în planul nostru, e bine aleasă.</td></tr>
+      <tr><td>Marți noaptea</td><td>4–6,7 kg boilies</td><td>Mai mult doar dacă marți după-amiaza au fost trageri.</td></tr>
+      <tr><td><strong>Miercuri 09:00</strong></td><td>5–8 kg</td><td>Normal.</td></tr>
+      <tr class="warm"><td><strong>Miercuri 15:00–17:30</strong></td><td><strong>10 kg</strong></td><td>⭐ <strong>Cea mai bună fereastră:</strong> cer 96–100% noros și presiune în scădere. Refacem toate lansetele proaspăt înainte de 18:00.</td></tr>
+      <tr><td>Miercuri noaptea</td><td>6,7 kg boilies</td><td>Noaptea e mai blândă (nori), apoi vine scăderea de presiune de joi.</td></tr>
+      <tr><td><strong>Joi 08:00–09:00</strong></td><td>3–4 kg, fără alune întregi</td><td>O completare scurtă pentru final. Nu încărcăm spotul în ultimele ore. Programul actual nu acoperă joi.</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="muted">Total estimat: ~36–50 kg mix spomb (stoc 50,5 kg) și ~14–17 kg boilies (stoc 20 kg). Restul de boilies rămâne pentru momeală și pentru urgențe. Dacă un spot nu dă nimic 12 ore, reducem nada acolo și mutăm efortul pe spotul care trage.</p>
+</section>
+<section id="sec-mixbag" class="tab-content">
+  <h2>🧪 Mix Bag — Broken Sling Team Iasi Mix</h2>
+  <div style="overflow-x:auto;">
+  <table>
+    <thead>
+      <tr><th>Ingredient</th><th>Ambalare</th><th class="num">Preț/kg (RON)</th><th class="num">KG</th><th class="num">Preț total (RON)</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Pelete Lucian 2 mm Aqua</td><td>vrac</td><td class="num">12</td><td class="num">6</td><td class="num">72</td></tr>
+      <tr><td>Pelete Aqua 4 mm Tomești</td><td>3 pungi (1,8 kg/pungă)</td><td class="num">15</td><td class="num">5,4</td><td class="num">81</td></tr>
+      <tr><td>Germeni</td><td>1 pungă (1,3 kg)</td><td class="num">18</td><td class="num">1</td><td class="num">18</td></tr>
+      <tr><td>Mix bag Cămara Crapului</td><td>8 pungi × 1,3 kg</td><td class="num">30</td><td class="num">10,4</td><td class="num">240</td></tr>
+      <tr style="font-weight:700"><td colspan="3">Total mix principal</td><td class="num">22,8</td><td class="num">411</td></tr>
+      <tr><td>Germeni Porumb</td><td>2 pungi (1,3 kg)</td><td class="num">18</td><td class="num">2,6</td><td class="num">46,80</td></tr>
+      <tr><td>Spărtură de porumb – „Spărtură aurie”</td><td>1 pungă 4 kg</td><td class="num">13</td><td class="num">4</td><td class="num">52</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p><strong>Preț mediu mix principal:</strong> ~20,55 RON/kg</p>
+</section>
+<section id="sec-mese" class="tab-content">
+  <h2>🍽️ Plan Mese</h2>
+  <div style="overflow-x:auto;">
+  <table>
+    <thead>
+      <tr><th>Zi / Masă</th><th>Meniu</th><th>Ingrediente principale</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Duminică — Seara</strong></td><td>Bolo + Focsi</td><td>—</td></tr>
+      <tr><td><strong>Luni — Dimineața</strong></td><td>Bolo + Focsi</td><td>—</td></tr>
+      <tr><td><strong>Luni — Prânz</strong></td><td>Ouă + brânză</td><td>12 ouă, cașcaval 2 rotițe, 1 pâine, 0,5 kg roșii</td></tr>
+      <tr><td><strong>Luni — Seara</strong></td><td>Ciorbă</td><td>2× piept pui, 4 ouă, smântână, 1 pungă denia legume, 1 pâine, ardei iute</td></tr>
+      <tr><td><strong>Marți — Dimineața</strong></td><td>Sandwich</td><td>Salam 1 bară, 1 pâine sănătoasă, felii brânză topită, 0,5 kg roșii</td></tr>
+      <tr><td><strong>Marți — Prânz</strong></td><td>Lipie cu omletă și cașcaval</td><td>1 pungă mare lipii, 8 ouă, șuncă vidată, cedar ras, castraveciori oțet (1l)</td></tr>
+      <tr><td><strong>Marți — Seara</strong></td><td>Grătar</td><td>Piept porc 4 buc, mici tavă 18, aripioare 1 tavă, ceafă 4 buc, ardei kapia oțet</td></tr>
+      <tr><td><strong>Miercuri — Dimineața</strong></td><td>Sandwich</td><td>Ceai tei, unt 2 pachete, dulceață, croissant, 1 pâine prăjită</td></tr>
+      <tr><td><strong>Miercuri — Prânz</strong></td><td>Cartofi prăjiți</td><td>Cartofi 2 kg, 12 ouă, cârnăciori vidați afumați, gouda feliat, 0,5 kg roșii, 1 pâine</td></tr>
+      <tr><td><strong>Miercuri — Seara</strong></td><td>Fasole + Ciolan</td><td>6 conserve fasole, ciolan/kaizer afumat, ceapă 1 kg, morcov 2, țelină, rădăcină pătrunjel, roșii cutie, 1 pâine</td></tr>
+      <tr><td><strong>Joi — Dimineața</strong></td><td>Pateu cu roșii</td><td>—</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="grid2">
+    <div>
+      <h3>Generale (de adus)</h3>
+      <ul>
+        <li>Ulei, oțet, sare, piper, muștar, foi dafin</li>
+        <li>Cărbuni, detergent vase + burete, scobitori</li>
+        <li>Prosoape bucătărie, saci gunoi mari</li>
+        <li>Croissant Lidl, napolitane Roger</li>
+        <li>Apă 20 × 2 l</li>
+        <li>Cafea: Bolo, Focsi, Buzatu, Prodi</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Echipament &amp; Ustensile</h3>
+      <ul>
+        <li>Butelie Bolo / Prodan, protecție flacără</li>
+        <li>Veselă (fiecare), tigaie teflon Focsi, ceaun fasole Buzatu</li>
+        <li>Grătar mic Bolo, ustensile grătar Bolo, bol de scos grătar Focsi</li>
+        <li>Oliță cafea-ceai Prodan, bidon apă Buzatu, tocător Focsi, cuțit</li>
+        <li>Ladă frigo Buzatu &amp; Prodan, butoi bere, arzător mare</li>
+        <li>Lemne grătar Buzatu, bardiță</li>
+        <li>Vevor: Prodan, Bolo, Buzatu</li>
+      </ul>
+    </div>
+  </div>
+  <div class="grid2">
+    <div>
+      <h3>Nadă / Pescuit de adus</h3>
+      <ul>
+        <li>Grăunțe 5 kg (Focsi)</li>
+        <li>Cânepă 1 kg (Focsi)</li>
+        <li>Sac păstrare mare 4× (Focsi)</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Dormit</h3>
+      <ul>
+        <li>Pat: Prodi, Buzatu</li>
+        <li>Sac dormit: Focsi, Buzatu</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== STRATEGIE ===================== -->
+<section id="sec-strategie" class="tab-content">
+  <h2>🧭 Strategie 5–8 octombrie 2026</h2>
+  <div class="callout green"><strong>Ideea de bază:</strong> o strategie simplă, stabilită dinainte și respectată de toți patru. În timpul concursului ajustăm doar detaliile: cantitatea, momeala, distanța. Așa a câștigat echipa de pe locul 1 la concursul anterior: aceeași strategie de la început până la final.</div>
+
+  <h3>Ce contează la clasament (din regulament)</h3>
+  <ul>
+    <li>Contează <strong>cantitatea + calitatea</strong> (cei mai mari 10 pești cântăriți separat). <strong>Ținta: minim 10 pești cântăriți separat.</strong> La calitate, 9 pești bat 8 pești indiferent de greutate.</li>
+    <li>Peștii mari îi punem în <strong>sac separat</strong>: un crap peste 8 kg stă singur în sac. Confirmăm cu arbitrul, de la început, cum se cântăresc peștii ținuți în același sac.</li>
+    <li>Peste 17 kg sau 15 saci plini înseamnă cântar suplimentar. Oficial se cântărește de 2 ori pe zi.</li>
+  </ul>
+
+  <h3>Roluri în echipă (sugestie, de stabilit duminică seara)</h3>
+  <div style="overflow-x:auto;">
+  <table>
+    <thead><tr><th>Rol</th><th>Ce face</th><th>Cine</th></tr></thead>
+    <tbody>
+      <tr><td>🎯 Responsabil nadă</td><td>Pregătește singur toată nada și momelile, ca la echipele de top. Ține evidența cantităților.</td><td></td></tr>
+      <tr><td>📍 Marker și spoturi</td><td>Sondează standul, desenează harta lui, clipsează distanțele.</td><td></td></tr>
+      <tr><td>🎣 Lansete și monturi</td><td>Leagă monturile, verifică cârligele și firele după fiecare pește.</td><td></td></tr>
+      <tr><td>📝 Jurnal și cântar</td><td>Notează fiecare tragere, se ocupă de saci și de semnături la cântar.</td><td></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>În cele 120 de minute de pregătire (fără sondare sau nădire)</h3>
+  <ul>
+    <li>Montăm marker-ul, spomb-urile și lansetele cu monturile legate dinainte (minim 50 g plumb, culisante sau cu plumb pierdut).</li>
+    <li>Pregătim nada pentru prima rundă (<strong>porumbul fiert obligatoriu</strong>), plus minim 15 saci, saltea, spray și frontale.</li>
+    <li>Stabilim turele de noapte (2 + 2) și cine face prima sondare.</li>
+  </ul>
+
+  <h3>Plan pe zile</h3>
+  <div class="days">
+    <div class="day"><div class="d">LUNI 5 · Recunoaștere</div><div class="s">Sondăm cu markerul <strong>tot</strong> standul (30–60 min) și notăm adânc maxim, pantă, platou și fund tare. Punem lansete pe 3 zone diferite (adânc, pantă, mai sus). Prima nădire e mică. Noaptea pescuim pe boilies, pe spoturile nădite.</div></div>
+    <div class="day"><div class="d">MARȚI 6 · Consolidare</div><div class="s">Facem bilanțul nopții și concentrăm nada pe zona care a tras. Păstrăm o lansetă de verificare pe altă zonă. Ziua e senină, cu presiune mare, deci peștele e prudent: monturi fine, nadă puțină.</div></div>
+    <div class="day best"><div class="d">MIERCURI 7 · Fereastra ⭐</div><div class="s">După-amiaza e noroasă (96–100%) și presiunea scade, deci e cea mai bună fereastră. Facem nădirea principală între 15:00 și 17:30 și refacem toate lansetele înainte de 18:00.</div></div>
+    <div class="day"><div class="d">JOI 8 · Final</div><div class="s">Dimineața poate fi ceață. Presiunea e cea mai mică (1017 hPa), deci ne putem aștepta la un final bun. Facem o completare mică la 08:00–09:00 și <strong>nu schimbăm strategia</strong>. Dacă un pește e înțepat înainte de semnal, avem 15 minute să-l scoatem.</div></div>
+  </div>
+
+  <h3>Unde punem lansetele (în funcție de prognoză)</h3>
+  <ul>
+    <li><strong>Noaptea și dimineața (5–10°C):</strong> peștele stă pe apa adâncă, unde temperatura e mai stabilă. Acolo ținem 2–3 lansete.</li>
+    <li><strong>După-amiaza (13:00–18:00, 18–23°C):</strong> apa mai mică și pantele se încălzesc. O lansetă de verificare mai sus pe pantă.</li>
+    <li><strong>Vântul:</strong> e slab (5–10 km/h). După-amiaza bate din N, NNV sau NE și poate împinge apa caldă spre malul de sud (standurile 1–8). Noaptea bate din S. Efectul e mic (ipoteză), îl urmărim.</li>
+  </ul>
+
+  <h3>În funcție de standul extras</h3>
+  <div style="overflow-x:auto;">
+  <table>
+    <thead><tr><th>Standuri</th><th>Zona</th><th>Ce facem</th></tr></thead>
+    <tbody>
+      <tr><td><strong>1–2 și 24</strong></td><td>Colțul cu stuf (SV), distanțe scurte ≈100 m</td><td>Considerat cel mai slab la concursul anterior. Pescuim precis, cu nadă puțină, spre marginea dinspre apa deschisă. Avem răbdare, finalul poate veni târziu.</td></tr>
+      <tr><td><strong>3–8</strong></td><td>Malul de sud</td><td>Verificăm cu markerul platoul din zona 7–8. După-amiaza vântul de nord împinge apa caldă spre acest mal.</td></tr>
+      <tr><td><strong>9–15</strong></td><td>Malul de est (spre Olt), distanțe lungi ≈170–177 m</td><td>Spomb lung, cu cel mai bun lansator pe nădire. Clip obligatoriu pe fir pentru precizie.</td></tr>
+      <tr><td><strong>16–23</strong></td><td>Nord și nord-vest (spre Căsuța Albă)</td><td>Zona de apă adâncă care a fost cea mai productivă pe final la concursul anterior. Ziua pe adânc, cu nădire constantă.</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="muted">Distanțele sunt orientative, preluate din harta tehnică a bălții. Vezi tabul 🗺️ Hartă Baltă.</p>
+
+  <h3>⚠️ La ce să fim atenți</h3>
+  <ul class="chk">
+    <li><strong>Sondăm noi cu markerul.</strong> Nu ne bazăm pe ce zic alții. Asta a fost cea mai mare greșeală la echipele bune, data trecută.</li>
+    <li>Nivelul apei poate fi diferit față de antrenamente. Data trecută apa a crescut cu peste 20 cm.</li>
+    <li>Începem cu nadă puțină și creștem doar după trageri.</li>
+    <li>Ne măsurăm după <strong>numărul de trageri</strong>, nu după kilograme.</li>
+    <li>Nu intrăm în panică la un start lent, Doripesco are final puternic.</li>
+    <li>Nu facem schimbări radicale pe final. Invitații le-au numit o „lamă cu două tăișuri”, cu șanse de 50/50.</li>
+    <li><strong>Niciun pește pierdut:</strong> cârlige ascuțite, frână reglată, saci verificați și ancorați la vedere.</li>
+    <li>Nu ne uităm obsesiv la clasamentul live.</li>
+    <li>Dormim pe ture. Oboseala a costat echipe data trecută.</li>
+    <li>Între 20:00 și 08:00 nădim <strong>doar cu cobra sau praștia</strong>. Două avertismente înseamnă 20 kg depunctare.</li>
+    <li>Porumbul trebuie fiert. Fără pământ, argilă sau bentonită.</li>
+    <li>Echipament de frig: nopțile au 5–8°C, iar AccuWeather dă până la 1°C.</li>
+  </ul>
+
+  <h3>📝 Jurnal capturi (de completat pe baltă)</h3>
+  <div style="overflow-x:auto;">
+  <table>
+    <thead><tr><th>Ora</th><th>Lanseta / zona</th><th>Distanță</th><th>Adâncime</th><th>Momeală</th><th>Nadă pusă</th><th class="num">Kg</th></tr></thead>
+    <tbody>
+      <tr><td>&nbsp;</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>&nbsp;</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>&nbsp;</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>&nbsp;</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+      <tr><td>&nbsp;</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- ===================== HARTA ===================== -->
+<section id="sec-harta" class="tab-content">
+  <h2>🗺️ Hartă Balta 4 Doripesco — standurile 1–24</h2>
+  <div class="stand-box">📍 Standul nostru: <span class="blank"></span> <span class="muted" style="font-weight:400">(extragere luni)</span></div>
+  <div class="map-wrap">
+  <svg viewBox="0 0 900 640" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Harta Balta 4 Doripesco cu standurile 1-24">
+    <style>
+      .st circle.n { fill:#e6c34a; stroke:#0b1712; stroke-width:2.5; }
+      .st text { font:800 17px "Segoe UI",Arial,sans-serif; fill:#0b1712; text-anchor:middle; }
+      .st line { stroke:#e6c34a; stroke-width:2; }
+      .st circle.p { fill:#7fd8a8; stroke:#0b1712; stroke-width:1; }
+      .lbl { font:600 13px "Segoe UI",Arial,sans-serif; fill:#e8f2ec; }
+      .lbls { font:600 11px "Segoe UI",Arial,sans-serif; fill:#a9c2b4; }
+      .zone { font:700 12px "Segoe UI",Arial,sans-serif; text-anchor:middle; }
+    </style>
+    <defs>
+      <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#1f6482"/><stop offset="1" stop-color="#174b62"/>
+      </linearGradient>
+      <clipPath id="lakeClip">
+        <path d="M210,470 L300,550 C420,545 560,515 740,455 C790,400 800,300 780,230 L700,120 L620,30 C520,50 420,75 300,120 C250,200 180,290 130,370 C140,420 170,450 210,470 Z"/>
+      </clipPath>
+    </defs>
+
+    <!-- teren -->
+    <rect width="900" height="640" fill="#15301f"/>
+    <!-- Raul Olt -->
+    <path d="M885,640 C860,520 885,420 868,320 C852,220 880,120 852,0" stroke="#3b8fd1" stroke-width="18" fill="none" opacity=".85"/>
+    <text class="lbl" transform="rotate(-90 876 520)" x="876" y="520" text-anchor="middle" style="fill:#fff">Râul OLT</text>
+
+    <!-- stuf SV -->
+    <g stroke="#5f9d4a" stroke-width="2" opacity=".9">
+      <line x1="150" y1="455" x2="146" y2="440"/><line x1="160" y1="462" x2="158" y2="445"/><line x1="172" y1="470" x2="174" y2="452"/>
+      <line x1="185" y1="478" x2="183" y2="462"/><line x1="198" y1="487" x2="200" y2="470"/><line x1="140" y1="440" x2="134" y2="426"/>
+      <line x1="215" y1="500" x2="213" y2="484"/><line x1="230" y1="512" x2="232" y2="495"/><line x1="250" y1="530" x2="248" y2="512"/>
+    </g>
+    <text class="lbl" x="170" y="510" style="fill:#8fcf7a">STUF</text>
+
+    <!-- lacul -->
+    <path d="M210,470 L300,550 C420,545 560,515 740,455 C790,400 800,300 780,230 L700,120 L620,30 C520,50 420,75 300,120 C250,200 180,290 130,370 C140,420 170,450 210,470 Z" fill="url(#water)" stroke="#9fd3e6" stroke-width="3"/>
+
+    <!-- zone (aprox.) -->
+    <g clip-path="url(#lakeClip)">
+      <ellipse cx="330" cy="215" rx="85" ry="50" fill="#e6c34a" opacity=".22" stroke="#e6c34a" stroke-dasharray="6 4" stroke-width="2"/>
+      <ellipse cx="560" cy="95" rx="60" ry="28" fill="#e6c34a" opacity=".16" stroke="#e6c34a" stroke-dasharray="6 4" stroke-width="2"/>
+      <ellipse cx="290" cy="505" rx="55" ry="28" fill="#ff9d76" opacity=".18" stroke="#ff9d76" stroke-dasharray="6 4" stroke-width="2"/>
+    </g>
+    <text class="zone" x="335" y="210" style="fill:#f3dd8a">APĂ ADÂNCĂ</text>
+    <text class="zone" x="335" y="226" style="fill:#f3dd8a">productiv pe final</text>
+    <text class="zone" x="565" y="100" style="fill:#f3dd8a">extra-cântar ~15 kg</text>
+    <text class="zone" x="300" y="505" style="fill:#ffc2a8">colț scurt · slab</text>
+    <text class="zone" x="300" y="520" style="fill:#ffc2a8">≈100 m</text>
+
+    <!-- platou -->
+    <circle cx="610" cy="420" r="16" fill="none" stroke="#5ee6d6" stroke-width="3"/>
+    <text class="lbls" x="610" y="448" text-anchor="middle" style="fill:#5ee6d6">platou / structură</text>
+
+    <!-- distante -->
+    <text class="lbls" x="700" y="320" text-anchor="middle">≈170–177 m</text>
+    <text class="lbls" x="300" y="300" text-anchor="middle">≈170 m</text>
+    <text class="lbls" x="500" y="470" text-anchor="middle">≈150–170 m</text>
+    <text x="490" y="330" text-anchor="middle" style="font:800 22px 'Segoe UI',Arial;fill:#9fd3e6;opacity:.45;letter-spacing:3px">BALTA 4</text>
+
+    <!-- repere -->
+    <rect x="620" y="14" width="16" height="10" fill="#fff"/>
+    <text class="lbl" x="644" y="24">Deversor</text>
+    <rect x="312" y="84" width="12" height="12" fill="#fff"/>
+    <text class="lbl" x="330" y="95">Căsuța Albă</text>
+    <rect x="290" y="608" width="12" height="12" fill="#c8a06a"/>
+    <text class="lbl" x="308" y="619">Cabana de lemn</text>
+    <text class="lbl" x="745" y="560">Loc încolonare</text>
+    <text class="lbls" x="745" y="576">(intrare echipe)</text>
+
+    <!-- nord -->
+    <g transform="translate(60,70)">
+      <circle r="26" fill="#0d1d16" stroke="#a9c2b4" stroke-width="2"/>
+      <path d="M0,-20 L8,6 L0,0 L-8,6 Z" fill="#e6c34a"/>
+      <text y="-30" text-anchor="middle" style="font:800 14px Arial;fill:#e8f2ec">N</text>
+    </g>
+
+    <!-- STANDURI 1-24 -->
+    <g class="st"><line x1="335" y1="548" x2="341" y2="580"/><circle class="p" cx="335" cy="548" r="4"/><circle class="n" cx="341" cy="580" r="17"/><text x="341" y="586">1</text></g>
+    <g class="st"><line x1="390" y1="542" x2="396" y2="573"/><circle class="p" cx="390" cy="542" r="4"/><circle class="n" cx="396" cy="573" r="17"/><text x="396" y="579">2</text></g>
+    <g class="st"><line x1="448" y1="533" x2="454" y2="564"/><circle class="p" cx="448" cy="533" r="4"/><circle class="n" cx="454" cy="564" r="17"/><text x="454" y="570">3</text></g>
+    <g class="st"><line x1="505" y1="521" x2="511" y2="552"/><circle class="p" cx="505" cy="521" r="4"/><circle class="n" cx="511" cy="552" r="17"/><text x="511" y="558">4</text></g>
+    <g class="st"><line x1="560" y1="508" x2="566" y2="539"/><circle class="p" cx="560" cy="508" r="4"/><circle class="n" cx="566" cy="539" r="17"/><text x="566" y="545">5</text></g>
+    <g class="st"><line x1="612" y1="495" x2="618" y2="526"/><circle class="p" cx="612" cy="495" r="4"/><circle class="n" cx="618" cy="526" r="17"/><text x="618" y="532">6</text></g>
+    <g class="st"><line x1="660" y1="480" x2="666" y2="511"/><circle class="p" cx="660" cy="480" r="4"/><circle class="n" cx="666" cy="511" r="17"/><text x="666" y="517">7</text></g>
+    <g class="st"><line x1="708" y1="466" x2="714" y2="497"/><circle class="p" cx="708" cy="466" r="4"/><circle class="n" cx="714" cy="497" r="17"/><text x="714" y="503">8</text></g>
+    <g class="st"><line x1="757" y1="432" x2="785" y2="452"/><circle class="p" cx="757" cy="432" r="4"/><circle class="n" cx="785" cy="452" r="17"/><text x="785" y="458">9</text></g>
+    <g class="st"><line x1="778" y1="378" x2="810" y2="390"/><circle class="p" cx="778" cy="378" r="4"/><circle class="n" cx="810" cy="390" r="17"/><text x="810" y="396">10</text></g>
+    <g class="st"><line x1="788" y1="320" x2="821" y2="322"/><circle class="p" cx="788" cy="320" r="4"/><circle class="n" cx="821" cy="322" r="17"/><text x="821" y="328">11</text></g>
+    <g class="st"><line x1="786" y1="262" x2="819" y2="258"/><circle class="p" cx="786" cy="262" r="4"/><circle class="n" cx="819" cy="258" r="17"/><text x="819" y="264">12</text></g>
+    <g class="st"><line x1="757" y1="198" x2="783" y2="179"/><circle class="p" cx="757" cy="198" r="4"/><circle class="n" cx="783" cy="179" r="17"/><text x="783" y="185">13</text></g>
+    <g class="st"><line x1="715" y1="140" x2="741" y2="121"/><circle class="p" cx="715" cy="140" r="4"/><circle class="n" cx="741" cy="121" r="17"/><text x="741" y="127">14</text></g>
+    <g class="st"><line x1="668" y1="84" x2="692" y2="63"/><circle class="p" cx="668" cy="84" r="4"/><circle class="n" cx="692" cy="63" r="17"/><text x="692" y="69">15</text></g>
+    <g class="st"><line x1="530" y1="50" x2="522" y2="19"/><circle class="p" cx="530" cy="50" r="4"/><circle class="n" cx="522" cy="19" r="17"/><text x="522" y="25">16</text></g>
+    <g class="st"><line x1="436" y1="75" x2="428" y2="44"/><circle class="p" cx="436" cy="75" r="4"/><circle class="n" cx="428" cy="44" r="17"/><text x="428" y="50">17</text></g>
+    <g class="st"><line x1="276" y1="157" x2="249" y2="141"/><circle class="p" cx="276" cy="157" r="4"/><circle class="n" cx="249" cy="141" r="17"/><text x="249" y="147">18</text></g>
+    <g class="st"><line x1="251" y1="194" x2="224" y2="178"/><circle class="p" cx="251" cy="194" r="4"/><circle class="n" cx="224" cy="178" r="17"/><text x="224" y="184">19</text></g>
+    <g class="st"><line x1="224" y1="232" x2="197" y2="216"/><circle class="p" cx="224" cy="232" r="4"/><circle class="n" cx="197" cy="216" r="17"/><text x="197" y="222">20</text></g>
+    <g class="st"><line x1="197" y1="270" x2="170" y2="254"/><circle class="p" cx="197" cy="270" r="4"/><circle class="n" cx="170" cy="254" r="17"/><text x="170" y="260">21</text></g>
+    <g class="st"><line x1="171" y1="308" x2="144" y2="292"/><circle class="p" cx="171" cy="308" r="4"/><circle class="n" cx="144" cy="292" r="17"/><text x="144" y="298">22</text></g>
+    <g class="st"><line x1="146" y1="346" x2="119" y2="330"/><circle class="p" cx="146" cy="346" r="4"/><circle class="n" cx="119" cy="330" r="17"/><text x="119" y="336">23</text></g>
+    <g class="st"><line x1="144" y1="410" x2="114" y2="422"/><circle class="p" cx="144" cy="410" r="4"/><circle class="n" cx="114" cy="422" r="17"/><text x="114" y="428">24</text></g>
+  </svg>
+  </div>
+  <div class="legend">
+    <span><i style="background:#e6c34a"></i>Număr stand</span>
+    <span><i style="background:#7fd8a8"></i>Ponton (centru stand)</span>
+    <span><i style="background:rgba(230,195,74,.35);border:1px dashed #e6c34a"></i>Zonă productivă (concurs anterior, aprox.)</span>
+    <span><i style="background:rgba(255,157,118,.35);border:1px dashed #ff9d76"></i>Zonă considerată slabă</span>
+    <span><i style="background:transparent;border:2px solid #5ee6d6"></i>Platou / structură</span>
+  </div>
+  <h3>Cum se citește harta</h3>
+  <ul>
+    <li><strong>1–8:</strong> malul de sud, de la colțul cu stuf (stânga) spre est.</li>
+    <li><strong>9–15:</strong> malul de est, spre Râul Olt, de jos în sus.</li>
+    <li><strong>16–24:</strong> malul de nord și de vest, de sus în jos, până la colțul cu stuf.</li>
+  </ul>
+  <p class="muted">Conturul bălții e desenat după harta color, iar numerotarea după harta tehnică. Pozițiile, distanțele și zonele sunt aproximative și au doar rol de orientare. Zonele marcate provin din interviurile de la concursul anterior.</p>
+</section>
+
+<!-- ===================== PROGNOZA ===================== -->
+<section id="sec-prognoza" class="tab-content">
+  <h2>🌦️ Prognoză Feldioara · 5–8 octombrie 2026</h2>
+  <div class="days">
+    <div class="day"><div class="d">LUNI 05.10</div><div class="t">21° / 5°</div><div class="s">☀️ Cer senin · vânt 4–7 km/h (S noaptea, N/NNV după-amiaza) · 1025 hPa<br>Răsărit 07:19 · Apus 18:52</div></div>
+    <div class="day"><div class="d">MARȚI 06.10</div><div class="t">22° / 6°</div><div class="s">☀️ Însorit · vânt 5–7 km/h (S/SE noaptea, NNE/N după-amiaza) · 1023 hPa<br>Răsărit 07:20 · Apus 18:50</div></div>
+    <div class="day best"><div class="d">MIERCURI 07.10 ⭐</div><div class="t">23° / 6°</div><div class="s">⛅→☁️ Noros 96–100% după-amiaza · vânt 5–9 km/h (NNV, apoi VSV) · 1021 hPa<br>Răsărit 07:22 · Apus 18:48</div></div>
+    <div class="day"><div class="d">JOI 08.10</div><div class="t">21° / 7°</div><div class="s">🌫️ Ceață dimineața (81% umiditate) · ☀️ apoi · vânt 6–10 km/h (NV/SV) · 1017 hPa<br>Răsărit 07:23 · Apus 18:47</div></div>
+  </div>
+
+  <h3>Temperaturi pe ore (°C)</h3>
+  <div style="overflow-x:auto;">
+  <table>
+    <thead><tr><th>Zi</th><th>00</th><th>03</th><th>06</th><th>09</th><th>12</th><th>15</th><th>18</th><th>21</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Luni</strong></td><td>8</td><td class="cold">6</td><td class="cold">5</td><td>10</td><td>18</td><td class="warm">21</td><td>17</td><td>12</td></tr>
+      <tr><td><strong>Marți</strong></td><td>9</td><td class="cold">7</td><td class="cold">6</td><td>11</td><td>18</td><td class="warm">22</td><td>18</td><td>13</td></tr>
+      <tr><td><strong>Miercuri</strong></td><td>9</td><td class="cold">7</td><td class="cold">6</td><td>11</td><td>19</td><td class="warm">23</td><td>19</td><td>13</td></tr>
+      <tr><td><strong>Joi</strong></td><td>10</td><td class="cold">8</td><td class="cold">7</td><td>11</td><td>18</td><td class="warm">21</td><td>18</td><td>13</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="muted">Sursa: tabelele orare pentru Feldioara. AccuWeather dă minime mai mici (1–5°C) și maxime de 22–24°C. Precipitații 0 mm, probabilitate 1–7%.</p>
+
+  <h3>Ce înseamnă pentru pescuit</h3>
+  <ul>
+    <li><strong>Între zi și noapte sunt 15–17°C diferență</strong> (aproape la fel ca la concursul anterior, unde au fost 18–20°C). Apa mică se răcește noaptea, iar apa adâncă rămâne mai stabilă, deci <strong>noaptea și dimineața peștele stă pe adânc</strong>.</li>
+    <li><strong>Între 13:00 și 18:00</strong> pantele și apa mică se încălzesc. E momentul pentru lanseta de verificare mai sus și pentru nădirea de după-amiază.</li>
+    <li><strong>Luni și marți presiunea e mare și stabilă (1025–1023 hPa), cu cer senin.</strong> Peștele e prudent, ca data trecută. Pescuim fin, cu nadă puțină și fără panică la start lent.</li>
+    <li><strong>Miercuri după-amiaza</strong> cerul e acoperit 96–100%, iar presiunea scade. E <strong>cea mai bună fereastră de hrănire</strong>.</li>
+    <li><strong>Joi</strong> presiunea e cea mai mică (1017 hPa) și dimineața poate fi ceață. Ne putem aștepta la un final activ, potrivit cu tiparul Doripesco.</li>
+    <li><strong>Vântul e slab (5–10 km/h, rafale până la 25 km/h)</strong> și influențează puțin. Noaptea bate din sud, după-amiaza din nord.</li>
+    <li><strong>Lumina:</strong> nădirea grea e permisă până la 20:00, dar se întunecă pe la 18:50. Ultima nădire grea o facem <strong>până pe la 18:30</strong>, ca să fie precisă.</li>
+  </ul>
+</section>
+
+<!-- ===================== LECTII ===================== -->
+<section id="sec-lectii" class="tab-content">
+  <h2>📊 Lecții din concursul anterior (Balta 4 Doripesco)</h2>
+  <div class="callout">Sursa: interviurile cu echipele din ziua 2 și ziua 3. Transcrierile sunt automate, așa că unele detalii (cifre, nume) sunt aproximative. Am păstrat doar informațiile clare sau repetate de mai mulți invitați.</div>
+
+  <h3>Context și clasament (seara zilei 3)</h3>
+  <ul>
+    <li><strong>Locul 1, Sighișoara:</strong> a ținut aceeași strategie de la început până la final. A pornit tare, apoi s-a stabilizat.</li>
+    <li><strong>Locul 2, Oltenia:</strong> la aproximativ 43 kg în urmă.</li>
+    <li>Deva era la mai puțin de 20 kg de lider, iar CC Argeș era și el în calcul.</li>
+    <li><strong>Între locuri au fost diferențe foarte mici, de 2–5 kg.</strong> O echipă a urcat de pe 6 pe 2, apoi a coborât pe 4, de la un cântar la altul.</li>
+  </ul>
+
+  <h3>Condiții pe baltă</h3>
+  <ul>
+    <li><strong>Apa a crescut cu peste 20 cm</strong> față de antrenamente, iar strategiile pregătite s-au dat peste cap.</li>
+    <li>Peștele a stat întâi pe apă mică, apoi <strong>s-a mutat pe apa adâncă</strong>.</li>
+    <li>Vremea a fost stabilă, cu soare și presiune în creștere. Ziua peștele a stat pe adânc.</li>
+    <li>Între zi și noapte au fost <strong>18–20°C diferență</strong>, ceea ce a încurcat multe calcule.</li>
+    <li>Doripesco are un tipar de <strong>start lent și final foarte bun</strong>. Peștele „ciupea” și nu se așeza pe nadă.</li>
+  </ul>
+
+  <div class="grid2">
+    <div class="callout green">
+      <h3 style="margin-top:0">✅ Puncte tari (ce a funcționat)</h3>
+      <ul>
+        <li><strong>O strategie comună, respectată de toți.</strong> La echipele de sus, un singur om a pregătit toată nada.</li>
+        <li><strong>Adaptare fără schimbarea strategiei.</strong> Au urmărit numărul de pești, nu doar kilogramele.</li>
+        <li><strong>Nădire echilibrată și prudentă.</strong> Nimeni nu a nădit agresiv.</li>
+        <li><strong>Nădire mai ales cu racheta (spomb)</strong>, cobra foarte puțin.</li>
+        <li><strong>Pescuit activ și noaptea.</strong> „Când unii se culcau, alții pescuiau.”</li>
+        <li><strong>Sondare proprie cu markerul.</strong> Cei care și-au resondat standul în ultima seară au văzut îmbunătățiri.</li>
+      </ul>
+    </div>
+    <div class="callout red">
+      <h3 style="margin-top:0">❌ Puncte slabe (greșeli)</h3>
+      <ul>
+        <li><strong>Încredere doar în informații de la alții, fără marker.</strong> A fost cea mai frecventă greșeală. „Trebuie găsit cu mâna ta.”</li>
+        <li><strong>Puține antrenamente pe Doripesco.</strong></li>
+        <li><strong>Pești pierduți</strong>, unii la mulincă, alții din sac înainte de cântar.</li>
+        <li><strong>Schimbări radicale pe final.</strong> Sunt o „lamă cu două tăișuri”, cu șanse de 50/50.</li>
+        <li><strong>Oboseală și presiune.</strong> Unele echipe s-au lăsat influențate de clasamentul live.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>🏆 Unde s-a prins cel mai mult</h3>
+  <ul>
+    <li><strong>Zona cu apă adâncă din nord-vest, spre Căsuța Albă,</strong> a fost cea mai productivă pe final.</li>
+    <li>Două standuri vecine din această zonă au prins cel mai mult: 7 pești plus un extra-cântar, față de 10 pești, cu doar ~3 kg diferență între ele.</li>
+    <li>Un stand din zona de nord, spre deversor, a avut în ultima seară un extra-cântar de aproape 15 kg.</li>
+    <li><strong>Colțul cu stuf din sud-vest</strong> (pe harta noastră, standurile 1–2) a fost considerat cel mai slab. Echipele voiau „orice în afară de 1 și 2”.</li>
+  </ul>
+  <p class="muted">Standurile din concursul anterior aveau altă denumire. Pozițiile de pe harta noastră sunt aproximate geografic.</p>
+
+  <h3>🎯 Ce luăm de aici</h3>
+  <ol>
+    <li>Sondăm singuri, din prima oră.</li>
+    <li>Căutăm apa adâncă, mai ales ziua, pe soare.</li>
+    <li>Începem cu nadă puțină și creștem doar după trageri.</li>
+    <li>Ținem strategia până la final și ajustăm doar detaliile.</li>
+    <li>Nu pierdem niciun pește și ne odihnim pe ture.</li>
+  </ol>
+</section>
+</main>
+
+<footer>
+  Cupa Tata Nitu · 5–8 octombrie 2026 · Balta Doripesco Brașov nr. 4 · Tight lines! 🎣
+</footer>
+
+</body>
+</html>
